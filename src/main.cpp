@@ -12,21 +12,38 @@
 #define CLK_PIN   18   // CLK
 #define CS_PIN    5    // CS or LOAD
 
-// Initialisér Parola-objektet
+// Initialise Parola-object
 MD_Parola display = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
+
+// List of messages
+const char* messages[] = {
+  "You're Slow",
+  "Bye",
+  "See Ya" 
+};
+
+constexpr uint8_t NUM_MESSAGES = sizeof(messages) / sizeof(messages[0]);
+uint8_t currentMessage = 0;
+
+constexpr uint16_t SCROLL_DELAY_MS = 50; //Speed for animation
 
 void setup() {
   display.begin();
-  display.setIntensity(5);         // Light intensity 0-15
+  display.setIntensity(1);         // Light intensity 0-15
   display.displayClear();
-  constexpr uint16_t SCROLL_DELAY_MS = 50; //Speed for animation
-  display.displayScroll("You're slow", PA_CENTER, PA_SCROLL_LEFT, SCROLL_DELAY_MS);
+  
+  display.displayScroll(messages[currentMessage], PA_CENTER, PA_SCROLL_LEFT, SCROLL_DELAY_MS);
 
 }
 
 void loop() {
   // Animation for text
   if (display.displayAnimate()) {
-    display.displayReset();  
+    // Next message
+    currentMessage = (currentMessage + 1) % NUM_MESSAGES;
+
+    // Start of new message
+    display.displayScroll(messages[currentMessage], PA_CENTER, PA_SCROLL_LEFT, SCROLL_DELAY_MS);
+  
   }
 }
