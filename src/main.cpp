@@ -2,29 +2,31 @@
 #include <MD_MAX72xx.h>
 #include <SPI.h>
 
-// Vælg hardware-type. FC16_HW er typisk for 8x8 MAX7219 moduler fra f.eks. Amazon/AliExpress.
+// hardware-type | FC16_HW 
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
 
-#define MAX_DEVICES 4  // 4 moduler = 32x8 pixels
+#define MAX_DEVICES 4  // 4 modules = 32x8 pixels
 
-// Definer tilslutninger (kan ændres efter dit setup)
+// Define connections
 #define DATA_PIN  23   // DIN
 #define CLK_PIN   18   // CLK
-#define CS_PIN    5    // CS eller LOAD
+#define CS_PIN    5    // CS or LOAD
 
 // Initialisér Parola-objektet
 MD_Parola display = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
 void setup() {
   display.begin();
-  display.setIntensity(5);         // Lysstyrke: 0-15
+  display.setIntensity(5);         // Light intensity 0-15
   display.displayClear();
-  display.displayScroll("Hej fra ESP32 og MAX7219!", PA_CENTER, PA_SCROLL_LEFT, 100);
+  constexpr uint16_t SCROLL_DELAY_MS = 50; //Speed for animation
+  display.displayScroll("You're slow", PA_CENTER, PA_SCROLL_LEFT, SCROLL_DELAY_MS);
+
 }
 
 void loop() {
-  // Skal kaldes løbende for at animere
+  // Animation for text
   if (display.displayAnimate()) {
-    display.displayReset();  // Gentag scroll
+    display.displayReset();  
   }
 }
